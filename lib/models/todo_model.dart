@@ -12,4 +12,14 @@ class Todo {
     required this.desc,
     this.completed = false,
   }) : id = id ?? uuid.v4();
+
+  List<Object> get props => [id, desc, completed];
+
+  bool get stringify => true;
+}
+
+enum Filter {
+  all,
+  active,
+  completed,
 }
