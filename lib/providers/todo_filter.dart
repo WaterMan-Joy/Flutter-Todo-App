@@ -11,8 +11,6 @@ class TodoFilterState {
 
   List<Object> get props => [filter];
 
-  bool get strinify => true;
-
   // copywith of TodoFilterState type
   TodoFilterState copywith({Filter? filter}) {
     return TodoFilterState(

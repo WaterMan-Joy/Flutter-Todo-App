@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_sample1/providers/providers.dart';
 
+import '../models/todo_model.dart';
 import '../providers/active_todo_count.dart';
 
 class TodosPage extends StatefulWidget {
@@ -23,6 +24,10 @@ class _TodosPageState extends State<TodosPage> {
               children: [
                 TodoHeader(),
                 CreateTodo(),
+                SizedBox(
+                  height: 20,
+                ),
+                SearchAndFilterTodo(),
               ],
             ),
           ),
@@ -42,18 +47,24 @@ class TodoHeader extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          'Todo',
-          style: TextStyle(fontSize: 40),
+          '메모 앱',
+          style: TextStyle(
+            fontSize: 40,
+          ),
         ),
         Text(
           '${context.watch<ActiveTodoCount>().state.activeTodoCount} Item',
-          style: TextStyle(fontSize: 20, color: Colors.redAccent),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.redAccent,
+          ),
         ),
       ],
     );
   }
 }
 
+// CreateTodo
 class CreateTodo extends StatefulWidget {
   const CreateTodo({super.key});
 
@@ -86,5 +97,64 @@ class _CreateTodoState extends State<CreateTodo> {
         }
       },
     );
+  }
+}
+
+// SearchAndFilter
+class SearchAndFilterTodo extends StatelessWidget {
+  const SearchAndFilterTodo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        TextField(
+          decoration: InputDecoration(
+            labelText: '메모 검색',
+            border: InputBorder.none,
+            filled: true,
+            prefixIcon: Icon(Icons.search),
+          ),
+          onChanged: (String? newSearchTerm) {
+            if (newSearchTerm != null) {
+              context.read<TodoSearch>().setSearchTerm(newSearchTerm);
+            }
+          },
+        ),
+        SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            filterButton(context, Filter.all),
+            filterButton(context, Filter.active),
+            filterButton(context, Filter.completed),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget filterButton(BuildContext context, Filter filter) {
+    return TextButton(
+      onPressed: () {
+        context.read<TodoFilter>().ChangeFilter(filter);
+      },
+      child: Text(
+        filter == Filter.all
+            ? 'All'
+            : filter == Filter.active
+                ? 'Active'
+                : 'Completed',
+        style: TextStyle(
+          fontSize: 20,
+          color: textColor(context, filter),
+        ),
+      ),
+    );
+  }
+
+  Color textColor(BuildContext context, Filter filter) {
+    final currentFilter = context.watch<TodoFilter>().state.filter;
+    return currentFilter == filter ? Colors.blue : Colors.grey;
   }
 }
