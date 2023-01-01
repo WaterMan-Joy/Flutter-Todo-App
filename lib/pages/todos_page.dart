@@ -1,5 +1,7 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:todo_sample1/providers/providers.dart';
 
 import '../models/todo_model.dart';
@@ -130,6 +132,7 @@ class SearchAndFilterTodo extends StatelessWidget {
             filterButton(context, Filter.completed),
           ],
         ),
+        ShowTodos(),
       ],
     );
   }
@@ -156,5 +159,95 @@ class SearchAndFilterTodo extends StatelessWidget {
   Color textColor(BuildContext context, Filter filter) {
     final currentFilter = context.watch<TodoFilter>().state.filter;
     return currentFilter == filter ? Colors.blue : Colors.grey;
+  }
+}
+
+// ShowTodos
+class ShowTodos extends StatelessWidget {
+  const ShowTodos({super.key});
+
+  Widget showBackGround(int direction) {
+    return Container(
+      margin: EdgeInsets.all(4),
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      color: Colors.red,
+      alignment: direction == 0 ? Alignment.centerLeft : Alignment.centerRight,
+      child: Icon(
+        Icons.delete,
+        size: 30,
+        color: Colors.white,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // todos 는 값이 변해야 하기 때문에 watch() 를 사용한다
+    final todos = context.watch<FilteredTodos>().state.filteredTodos;
+    return ListView.separated(
+      primary: false,
+      shrinkWrap: true,
+      itemBuilder: ((context, index) => Dismissible(
+            onDismissed: ((DismissDirection _) =>
+                context.read<TodoList>().removeTodo(todos[index])),
+            background: showBackGround(0),
+            secondaryBackground: showBackGround(1),
+            key: ValueKey(todos[index].id),
+            child: TodoItem(
+              todo: todos[index],
+            ),
+            confirmDismiss: (DismissDirection _) {
+              return showDialog(
+                  context: context,
+                  // barrerDismissible 은 바깥 화면을 눌러도 취소가 되지 않는다
+                  barrierDismissible: false,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text('삭제하기'),
+                      content: Text('정말 삭제하시겠습니까?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, false),
+                          child: Text('취소'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, true),
+                          child: Text('확인'),
+                        ),
+                      ],
+                    );
+                  });
+            },
+          )),
+      separatorBuilder: (context, index) => Divider(
+        color: Colors.grey,
+      ),
+      itemCount: todos.length,
+    );
+  }
+}
+
+// TodoItem
+class TodoItem extends StatefulWidget {
+  final Todo todo;
+  const TodoItem({
+    Key? key,
+    required this.todo,
+  }) : super(key: key);
+
+  @override
+  State<TodoItem> createState() => _TodoItemState();
+}
+
+class _TodoItemState extends State<TodoItem> {
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Checkbox(
+        onChanged: (bool? checked) {},
+        value: widget.todo.completed,
+      ),
+      title: Text(widget.todo.desc),
+    );
   }
 }
