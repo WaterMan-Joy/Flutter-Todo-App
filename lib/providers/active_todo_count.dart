@@ -16,8 +16,6 @@ class ActiveTodoCountState {
 
   List<Object> get props => [activeTodoCount];
 
-  bool get stringify => true;
-
   ActiveTodoCountState copywith({int? activeTodoCount}) {
     return ActiveTodoCountState(
         activeTodoCount: activeTodoCount ?? this.activeTodoCount);
@@ -34,6 +32,7 @@ class ActiveTodoCount with ChangeNotifier {
         .toList()
         .length;
     _state = _state.copywith(activeTodoCount: newActiveTodoCount);
+    print('총 메모 개수: ${state.props}');
     notifyListeners();
   }
 }
