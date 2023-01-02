@@ -55,7 +55,7 @@ class TodoHeader extends StatelessWidget {
           ),
         ),
         Text(
-          '${context.watch<ActiveTodoCount>().state.activeTodoCount} Item',
+          '${context.watch<ActiveTodoCount>().state.activeTodoCount} 개',
           style: TextStyle(
             fontSize: 20,
             color: Colors.redAccent,
@@ -198,25 +198,26 @@ class ShowTodos extends StatelessWidget {
             ),
             confirmDismiss: (DismissDirection _) {
               return showDialog(
-                  context: context,
-                  // barrerDismissible 은 바깥 화면을 눌러도 취소가 되지 않는다
-                  barrierDismissible: false,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text('삭제하기'),
-                      content: Text('정말 삭제하시겠습니까?'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, false),
-                          child: Text('취소'),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, true),
-                          child: Text('확인'),
-                        ),
-                      ],
-                    );
-                  });
+                context: context,
+                // barrerDismissible 은 바깥 화면을 눌러도 취소가 되지 않는다
+                barrierDismissible: false,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text('삭제하기'),
+                    content: Text('정말 삭제하시겠습니까?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: Text('취소'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        child: Text('확인'),
+                      ),
+                    ],
+                  );
+                },
+              );
             },
           )),
       separatorBuilder: (context, index) => Divider(
@@ -240,11 +241,68 @@ class TodoItem extends StatefulWidget {
 }
 
 class _TodoItemState extends State<TodoItem> {
+  late final TextEditingController textController;
+
+  @override
+  void initState() {
+    super.initState();
+    textController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: () {
+        showDialog(
+            context: (context),
+            builder: (context) {
+              bool _error = false;
+              textController.text = widget.todo.desc;
+
+              return StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setState) {
+                return AlertDialog(
+                  title: Text('수정'),
+                  content: TextField(
+                    controller: textController,
+                    autofocus: true,
+                    decoration: InputDecoration(
+                        errorText: _error ? '수정 할 수 없습니다' : null),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text('취소'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _error = textController.text.isEmpty ? true : false;
+                          if (!_error) {
+                            context
+                                .read<TodoList>()
+                                .editTodo(widget.todo.id, textController.text);
+                            Navigator.pop(context);
+                          }
+                        });
+                      },
+                      child: Text('확인'),
+                    ),
+                  ],
+                );
+              });
+            });
+      },
       leading: Checkbox(
-        onChanged: (bool? checked) {},
+        onChanged: (bool? checked) {
+          context.read<TodoList>().toggleTodo(widget.todo.id);
+        },
         value: widget.todo.completed,
       ),
       title: Text(widget.todo.desc),
