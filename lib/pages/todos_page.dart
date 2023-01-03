@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:todo_sample1/providers/providers.dart';
+import 'package:todo_sample1/utils/debounce.dart';
 
 import '../models/todo_model.dart';
 import '../providers/active_todo_count.dart';
@@ -104,7 +105,8 @@ class _CreateTodoState extends State<CreateTodo> {
 
 // SearchAndFilter
 class SearchAndFilterTodo extends StatelessWidget {
-  const SearchAndFilterTodo({super.key});
+  SearchAndFilterTodo({super.key});
+  final debounce = Debounce(millisecondes: 500);
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +121,9 @@ class SearchAndFilterTodo extends StatelessWidget {
           ),
           onChanged: (String? newSearchTerm) {
             if (newSearchTerm != null) {
-              context.read<TodoSearch>().setSearchTerm(newSearchTerm);
+              debounce.run(() {
+                context.read<TodoSearch>().setSearchTerm(newSearchTerm);
+              });
             }
           },
         ),

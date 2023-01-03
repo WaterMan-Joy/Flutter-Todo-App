@@ -16,10 +16,6 @@ class FilteredTodosState {
     return FilteredTodosState(filteredTodos: []);
   }
 
-  List<Object> get props => [filteredTodos];
-
-  bool get stringify => true;
-
   FilteredTodosState copyWith({
     List<Todo>? filteredTodos,
   }) {

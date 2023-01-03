@@ -9,8 +9,6 @@ class TodoFilterState {
     required this.filter,
   });
 
-  List<Object> get props => [filter];
-
   // copywith of TodoFilterState type
   TodoFilterState copywith({Filter? filter}) {
     return TodoFilterState(

@@ -21,11 +21,6 @@ class TodoListState {
     ]);
   }
 
-  // 배열로 겟터로 외부에서 불러올 수 있도록 할 수 있다
-  List<Object> get props => [todos];
-
-  bool get stringify => true;
-
   TodoListState copywith({List<Todo>? todos}) {
     return TodoListState(todos: todos ?? this.todos);
   }

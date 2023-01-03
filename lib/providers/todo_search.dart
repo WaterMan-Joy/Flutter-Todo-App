@@ -7,10 +7,6 @@ class TodoSearchState {
     required this.searchTerm,
   });
 
-  List<Object> get props => [searchTerm];
-
-  bool get stringify => true;
-
   factory TodoSearchState.initial() {
     return TodoSearchState(searchTerm: '');
   }
