@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/cupertino.dart';
+
 import 'package:todo_sample1/providers/todo_list.dart';
 
 import '../models/todo_model.dart';
@@ -23,7 +24,18 @@ class ActiveTodoCountState {
 }
 
 class ActiveTodoCount with ChangeNotifier {
-  ActiveTodoCountState _state = ActiveTodoCountState.initial();
+  // ActiveTodoCountState _state = ActiveTodoCountState.initial();
+  // _state 를 나중에 선언
+  late ActiveTodoCountState _state;
+  // 런타임에서 정의
+  final int initialActiveTodoCount;
+  ActiveTodoCount({
+    required this.initialActiveTodoCount,
+  }) {
+    print('initialActiveTodoCount');
+    // 런타임에서 ActiveTodoCountState 을 initialActionTiveTodoCount 를 정의
+    _state = ActiveTodoCountState(activeTodoCount: initialActiveTodoCount);
+  }
   ActiveTodoCountState get state => _state;
 
   void update(TodoList todoList) {

@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/cupertino.dart';
+
 import 'package:todo_sample1/providers/todo_filter.dart';
 import 'package:todo_sample1/providers/todo_list.dart';
 import 'package:todo_sample1/providers/todo_search.dart';
@@ -26,7 +27,21 @@ class FilteredTodosState {
 }
 
 class FilteredTodos with ChangeNotifier {
-  FilteredTodosState _state = FilteredTodosState.initial();
+  // FilteredTodosState _state = FilteredTodosState.initial();
+
+  // _state 를 나중에 선언
+  late FilteredTodosState _state;
+
+  // 리스트 타입으로 런타임에서 initialFilteredTodos 가 정의 되게 만듬
+  final List<Todo> initialFilteredTodos;
+  FilteredTodos({
+    required this.initialFilteredTodos,
+  }) {
+    print('initialFilteredTodos: $initialFilteredTodos');
+    // _state 에 저장
+    _state = FilteredTodosState(filteredTodos: initialFilteredTodos);
+  }
+
   FilteredTodosState get state => _state;
 
   void update(TodoFilter todoFilter, TodoSearch todoSearch, TodoList todoList) {
