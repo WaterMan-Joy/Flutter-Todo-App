@@ -26,25 +26,17 @@ class FilteredTodosState {
   }
 }
 
-class FilteredTodos with ChangeNotifier {
-  // FilteredTodosState _state = FilteredTodosState.initial();
-
-  // _state 를 나중에 선언
-  late FilteredTodosState _state;
-
-  // 리스트 타입으로 런타임에서 initialFilteredTodos 가 정의 되게 만듬
-  final List<Todo> initialFilteredTodos;
+class FilteredTodos {
+  final TodoFilter todoFilter;
+  final TodoSearch todoSearch;
+  final TodoList todoList;
   FilteredTodos({
-    required this.initialFilteredTodos,
-  }) {
-    print('initialFilteredTodos: $initialFilteredTodos');
-    // _state 에 저장
-    _state = FilteredTodosState(filteredTodos: initialFilteredTodos);
-  }
+    required this.todoFilter,
+    required this.todoSearch,
+    required this.todoList,
+  });
 
-  FilteredTodosState get state => _state;
-
-  void update(TodoFilter todoFilter, TodoSearch todoSearch, TodoList todoList) {
+  FilteredTodosState get state {
     List<Todo> _filteredTodos;
     switch (todoFilter.state.filter) {
       case Filter.active:
@@ -66,7 +58,6 @@ class FilteredTodos with ChangeNotifier {
               todo.desc.toLowerCase().contains(todoSearch.state.searchTerm))
           .toList();
     }
-    _state = _state.copyWith(filteredTodos: _filteredTodos);
-    notifyListeners();
+    return FilteredTodosState(filteredTodos: _filteredTodos);
   }
 }
