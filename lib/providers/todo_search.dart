@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/cupertino.dart';
+import 'package:state_notifier/state_notifier.dart';
 
 class TodoSearchState {
   final String searchTerm;
@@ -16,12 +17,10 @@ class TodoSearchState {
   }
 }
 
-class TodoSearch with ChangeNotifier {
-  TodoSearchState _state = TodoSearchState.initial();
-  TodoSearchState get state => _state;
+class TodoSearch extends StateNotifier<TodoSearchState> {
+  TodoSearch() : super(TodoSearchState.initial());
 
   void setSearchTerm(String newSearchTerm) {
-    _state = _state.copywith(searchTerm: newSearchTerm);
-    notifyListeners();
+    state = state.copywith(searchTerm: newSearchTerm);
   }
 }

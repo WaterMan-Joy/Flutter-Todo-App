@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/cupertino.dart';
+import 'package:state_notifier/state_notifier.dart';
 
 import '../models/todo_model.dart';
 
@@ -23,14 +24,11 @@ class TodoFilterState {
 }
 
 // ChangeNotifier
-class TodoFilter with ChangeNotifier {
-  // _state initial()
-  TodoFilterState _state = TodoFilterState.initial();
-  TodoFilterState get state => _state;
+class TodoFilter extends StateNotifier<TodoFilterState> {
+  TodoFilter() : super(TodoFilterState.initial());
 
   // new filter
   void ChangeFilter(Filter newFilter) {
-    _state = _state.copywith(filter: newFilter);
-    notifyListeners();
+    state = state.copywith(filter: newFilter);
   }
 }
